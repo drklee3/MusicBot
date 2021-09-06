@@ -1,22 +1,7 @@
 ARG JAVA_VERSION=11
-
-FROM maven:3.6-openjdk-$JAVA_VERSION as builder
-
-WORKDIR /tmp/workdir
-
-COPY pom.xml ./
-
-RUN mvn dependency:go-offline
-
-COPY src/ ./src/
-
-RUN mvn package
-
-
-ARG JAVA_VERSION
-
 FROM openjdk:$JAVA_VERSION-jre
 
-COPY --from=builder /tmp/workdir/target/JMusicBot-*-All.jar /JMusicBot.jar
+ARG MUSICBOT_VERSION=0.3.5
+RUN wget "https://github.com/jagrosh/MusicBot/releases/download/$MUSICBOT_VERSION/JMusicBot-$MUSICBOT_VERSION.jar" -O /JMusicBot.jar
 
 CMD ["java", "-Dnogui=true", "-jar", "/JMusicBot.jar"]
